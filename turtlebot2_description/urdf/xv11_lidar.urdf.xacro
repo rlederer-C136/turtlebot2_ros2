@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Xacro file for XV11 LIDAR -->
-  <xacro:macro name="xv11_lidar" parent_link="">
+  <xacro:macro name="xv11_lidar" params="parent">
     <!-- XV11 LIDAR link -->
     <link name="laser_frame">
       <visual>
@@ -29,7 +29,7 @@
 
     <!-- Joint connecting LIDAR to the robot -->
     <joint name="laser_frame_joint" type="fixed">
-      <parent link="${parent_link}"/>
+      <parent link="${parent}"/>
       <child link="laser_frame"/>
       <origin xyz="0.0 0.0 0.1" rpy="0 0 0"/>
     </joint>

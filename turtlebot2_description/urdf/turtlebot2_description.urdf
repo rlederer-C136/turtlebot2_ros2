@@ -17,7 +17,7 @@
 
   <xacro:include filename="$(find turtlebot2_description)/urdf/xv11_lidar.urdf.xacro"/>
 
-  <xacro:xv11_lidar parent_link="plate_top_link"/>
+  <xacro:xv11_lidar parent="plate_top_link"/>
 
   <!-- Realsense camera -->
   <xacro:arg name="use_nominal_extrinsics" default="true"/>
