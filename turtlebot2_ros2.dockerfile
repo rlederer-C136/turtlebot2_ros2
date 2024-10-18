@@ -87,7 +87,7 @@ WORKDIR $ROBOT_WORKSPACE
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
 
 COPY ros_entrypoint.sh /
-
+COPY turtlebot2.rviz /
 # Make sure the entrypoint script is executable
 RUN chmod +x /ros_entrypoint.sh
 
