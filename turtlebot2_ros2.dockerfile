@@ -77,14 +77,23 @@ RUN --mount=type=bind,source=.,target="$ROBOT_WORKSPACE/src",readonly \
     source "/opt/ros/$ROS_DISTRO/setup.bash" && \
     colcon build --packages-select turtlebot2_description turtlebot2_bringup --parallel-workers $parallel_jobs --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
+# Install pyserial for the xv11 LIDAR
+RUN apt-get update && apt-get install -y python3-serial && rm -rf /var/lib/apt/lists/*
+
 # Clone and build xv11_lidar_python
 WORKDIR $ROBOT_WORKSPACE/src
 RUN git clone https://github.com/n1kn4x/xv11_lidar_python.git
 WORKDIR $ROBOT_WORKSPACE
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
 
-# Set the entrypoint to source the ROS setup and your workspace
-ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/$ROS_DISTRO/setup.bash && source $ROBOT_WORKSPACE/install/setup.bash && exec \"$@\"", "--"]
+COPY ros_entrypoint.sh /
+
+# Make sure the entrypoint script is executable
+RUN chmod +x /ros_entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
 
 # Kobuki udev rules for host machine
 # `wget https://raw.githubusercontent.com/kobuki-base/kobuki_ftdi/devel/60-kobuki.rules`
