@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
 <robot name="turtlebot2" xmlns:xacro="http://ros.org/wiki/xacro">
 
-<!--
-    - Base      : kobuki
-    - Stacks    : hexagons
-    - 3d Sensor : realsense d435
-    - Nav Sensor: houkyo
--->    
+  <!--
+      - Base      : kobuki
+      - Stacks    : hexagons
+      - 3d Sensor : realsense d435
+      - Nav Sensor: XV11 LIDAR
+  -->
 
   <xacro:include filename="$(find turtlebot2_description)/urdf/turtlebot_common_library.urdf.xacro" />
   <xacro:include filename="$(find kobuki_description)/urdf/kobuki.urdf.xacro" />
   <xacro:include filename="$(find turtlebot2_description)/urdf/stacks/hexagons.urdf.xacro" />
-  <xacro:include filename="$(find urg_node)/urdf/hokuyo_ust10.urdf.xacro" />
-  
+
   <xacro:kobuki/>
   <xacro:stack_hexagons parent="base_link"/>
-  <xacro:hokuyo_ust10_mount parent_link="plate_middle_link" topic="scan" prefix="nav">
-    <origin xyz=".05 0 0" rpy="0 0 0" />
-  </xacro:hokuyo_ust10_mount>
 
+  <xacro:include filename="$(find turtlebot2_description)/urdf/xv11_lidar.urdf.xacro"/>
+
+  <xacro:xv11_lidar parent_link="plate_top_link"/>
+
+  <!-- Realsense camera -->
   <xacro:arg name="use_nominal_extrinsics" default="true"/>
   <xacro:arg name="add_plug" default="false" />
   <xacro:arg name="use_mesh" default="true" />
@@ -29,3 +30,4 @@
   </xacro:sensor_d435>
 
 </robot>
+
