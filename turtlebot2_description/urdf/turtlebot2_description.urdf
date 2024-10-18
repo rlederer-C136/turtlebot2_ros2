@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <robot name="turtlebot2" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <!--
-      - Base      : kobuki
-      - Stacks    : hexagons
-      - 3d Sensor : realsense d435
-      - Nav Sensor: XV11 LIDAR
-  -->
+<!--
+    - Base      : kobuki
+    - Stacks    : hexagons
+    - 3d Sensor : realsense d435
+    - Nav Sensor: XV11 LIDAR
+-->
 
   <xacro:include filename="$(find turtlebot2_description)/urdf/turtlebot_common_library.urdf.xacro" />
   <xacro:include filename="$(find kobuki_description)/urdf/kobuki.urdf.xacro" />
