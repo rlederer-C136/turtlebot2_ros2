@@ -5,36 +5,20 @@
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
 from launch_ros.substitutions import FindPackageShare
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, GroupAction
+from launch.actions import IncludeLaunchDescription, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution, TextSubstitution
+from launch.substitutions import PathJoinSubstitution
 import launch_ros
 
 def generate_launch_description():
 
-    laser_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('urg_node'),
-                'launch',
-                'urg_node_launch.py'
-            ])
-        ]),
-        launch_arguments={
-            'sensor_interface': 'serial'
-        }.items()
-    )        
+    # Removed the URG node launch (laser_node)
 
+    # Include the robot model description
     robot_model = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -45,9 +29,10 @@ def generate_launch_description():
         ])
     )
 
+    # Define the Kobuki node
     kobuki_node = GroupAction(
         actions=[
-            launch_ros.actions.SetRemap( src='/commands/velocity', dst='/cmd_vel'),
+            launch_ros.actions.SetRemap(src='/commands/velocity', dst='/cmd_vel'),
 
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
@@ -61,6 +46,7 @@ def generate_launch_description():
         ]
     )
 
+    # Robot localization node (commented out in original)
     robot_localization_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -71,9 +57,10 @@ def generate_launch_description():
         ])
     )
 
+    # Define the SLAM node with remapping
     slam_node = GroupAction(
         actions=[
-            launch_ros.actions.SetRemap( src='/scan', dst='/scan_filtered'),
+            launch_ros.actions.SetRemap(src='/scan', dst='/scan_filtered'),
 
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
@@ -87,6 +74,7 @@ def generate_launch_description():
         ]
     )
 
+    # Navigation node
     nav_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -97,6 +85,7 @@ def generate_launch_description():
         ])
     )
 
+    # Laser filter node
     laser_filter = LaunchDescription()
     laser_filter_node = launch_ros.actions.Node(
         package='laser_filters',
@@ -106,11 +95,12 @@ def generate_launch_description():
                 FindPackageShare('turtlebot2_bringup'),
                 'config',
                 'turtlebot2_laser_scan_filter.yaml'
-            ])],
-        )
-    laser_filter.add_action( laser_filter_node )
+            ])
+        ],
+    )
+    laser_filter.add_action(laser_filter_node)
 
-
+    # Realsense camera node
     realsense_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -120,14 +110,29 @@ def generate_launch_description():
             ])
         ])
     )
-    
+
+    # Added the xv11 LIDAR node
+    xv11_lidar_node = launch_ros.actions.Node(
+        package='xv11_lidar_python',
+        executable='xv11_lidar',
+        name='xv11_lidar_node',
+        output='screen',
+        parameters=[{
+            'port': '/dev/ttyACM0',       # Adjust the port if necessary
+            'frame_id': 'laser_frame'     # Adjust the frame_id if necessary
+        }],
+        remappings=[
+            ('/scan', '/scan')            # Ensure the topic names match
+        ]
+    )
+
     return LaunchDescription([
         robot_model,
-        laser_node,
+        xv11_lidar_node,      # Included the new xv11 node
         laser_filter,
         realsense_node,
         kobuki_node,
-        #robot_localization_node,
+        # robot_localization_node,  # Uncomment if needed
         slam_node,
         nav_node
     ])
