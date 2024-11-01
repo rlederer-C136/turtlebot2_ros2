@@ -93,6 +93,7 @@ WORKDIR $ROBOT_WORKSPACE
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
 
 # Install YOLO and dependencies
+RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
 RUN pip install -r requirements.txt
 RUN git clone https://github.com/ultralytics/yolov5.git
 
