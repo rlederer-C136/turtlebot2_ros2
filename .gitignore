@@ -43,6 +43,15 @@ qtcreator-*
 /planning/src
 
 *~
+# Ignore environment and package manager files
+.env
+.env.*
+*.envrc
+.pipenv
+Pipfile.lock
+poetry.lock
+package-lock.json
+yarn.lock
 
 # Emacs
 .#*

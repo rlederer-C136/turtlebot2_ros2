@@ -58,11 +58,17 @@ RUN apt-get update && apt-get upgrade -y && rosdep install --from-paths ./instal
 # RUN apt-get update && apt-get install "ros-$ROS_DISTRO-urg-node" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 # And related patch commands
 
+# Install ROS2 Joystick drivers
+RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 # Install RealSense drivers and ROS nodes
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-realsense2-* -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install Nav2 bringup package
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO-nav2-bringup" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+# Install RTABMAP package
+RUN apt-get update && apt-get install "ros-$ROS_DISTRO-rtabmap-ros" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install Turtlebot dependencies with rosdep
 WORKDIR $ROBOT_WORKSPACE
@@ -85,6 +91,19 @@ WORKDIR $ROBOT_WORKSPACE/src
 RUN git clone https://github.com/n1kn4x/xv11_lidar_python.git
 WORKDIR $ROBOT_WORKSPACE
 RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
+
+# Install YOLO and dependencies
+RUN pip install -r requirements.txt
+RUN git clone https://github.com/ultralytics/yolov5.git
+
+# Install AO modules, ao_core and ao_arch
+#    Notes: - ao_core is a private repo; say hi for access: https://calendly.com/aee/aolabs or https://discord.com/invite/nHuJc4Y4n7
+#           - already have access? generate your Personal Access Token from github here: https://github.com/settings/tokens?type=beta
+COPY .env $ROBOT_WORKSPACE
+RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
+    export $(grep -v '^#' .env | xargs) && \
+    pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git
+RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
 COPY ros_entrypoint.sh /
 COPY turtlebot2.rviz /
