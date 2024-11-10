@@ -111,7 +111,7 @@ RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
 RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
     export $(grep -v '^#' .env | xargs) && \
-    pip install git+https://${rlederer-C136_github_PAT}@github.com/rlederer-C136/ao_instincts.git
+    pip install git+https://${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git
 
 # Copy /root/robot to a backup directory during build
 RUN cp -a /root/robot /root/robot_backup
