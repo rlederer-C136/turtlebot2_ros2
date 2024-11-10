@@ -16,7 +16,7 @@ After building up the Turtlebot2 and installing Ubuntu 22.04 on the robot comput
 Clone this repo, and from that directory, the dockerfile can be built with the command
 
 `DOCKER_BUILDKIT=1 docker build \
-    --secret id=env,src=env \
+    --secret id=env,src=.env \
     -t ingot/turtlebot2-ros-iron:desktop \
     -f turtlebot2_ros2.dockerfile \
     --build-arg from_image=osrf/ros:iron-desktop \

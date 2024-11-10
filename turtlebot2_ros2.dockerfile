@@ -109,7 +109,7 @@ RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
 # Install ao_instincts using the GitHub PAT securely
 RUN --mount=type=secret,id=env \
-    GITHUB_PAT=$(cat /run/secrets/env) && \
+    GITHUB_PAT=$(cat /run/secrets/.env) && \
     git config --global url."https://${GITHUB_PAT}:@github.com/".insteadOf "https://github.com/" && \
     pip install git+https://github.com/rlederer-C136/ao_instincts.git
 
