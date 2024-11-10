@@ -107,8 +107,18 @@ RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
     pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git
 RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
+# Install AO Instincts, ao_instincts
+
+RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
+    export $(grep -v '^#' .env | xargs) && \
+    pip install git+https://${rlederer-C136_github_PAT}@github.com/rlederer-C136/ao_instincts.git
+
+# Copy /root/robot to a backup directory during build
+RUN cp -a /root/robot /root/robot_backup
+
+COPY turtlebot2.rviz /root/robot
+
 COPY ros_entrypoint.sh /
-COPY turtlebot2.rviz /
 # Make sure the entrypoint script is executable
 RUN chmod +x /ros_entrypoint.sh
 
