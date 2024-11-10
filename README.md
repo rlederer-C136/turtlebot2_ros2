@@ -14,6 +14,14 @@ Additional navigation sensors may be added if requested, and pull requests are a
 After building up the Turtlebot2 and installing Ubuntu 22.04 on the robot computer, install Docker (`docker.io`), git, and any other favorite packages. We use a separate laptop for controlling the robot, so the robot computer also needs Open-SSH server and tmux.
 
 Clone this repo, and from that directory, the dockerfile can be built with the command
+
+`DOCKER_BUILDKIT=1 docker build \
+    --secret id=env,src=env \
+    -t ingot/turtlebot2-ros-iron:desktop \
+    -f turtlebot2_ros2.dockerfile \
+    --build-arg from_image=osrf/ros:iron-desktop \
+    --build-arg parallel_jobs=4 .`
+
 `docker build -t ingot/turtlebot2-ros-iron:desktop -f turtlebot2_ros2.dockerfile --build-arg from_image=osrf/ros:iron-desktop --build-arg parallel_jobs=4 .`
 The dockerfile has default values for the base image (`ros:iron`) and parallel build jobs (8), but the command above overrides the defaults. Adjust as fits your needs.
 

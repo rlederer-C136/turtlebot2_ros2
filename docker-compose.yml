@@ -19,3 +19,6 @@ services:
     stdin_open: true  # Equivalent to -i (interactive) in docker run
     tty: true         # Equivalent to -t (pseudo-TTY) in docker run
     command: bash      # Starts bash when the container runs
+secrets:
+  github_pat:
+    file: ./env

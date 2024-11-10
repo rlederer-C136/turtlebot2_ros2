@@ -107,11 +107,11 @@ RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
     pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git
 RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
-# Install AO Instincts, ao_instincts
-
-RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
-    export $(grep -v '^#' .env | xargs) && \
-    pip install git+https://${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git
+# Install ao_instincts using the GitHub PAT securely
+RUN --mount=type=secret,id=env \
+    GITHUB_PAT=$(cat /run/secrets/env) && \
+    git config --global url."https://${GITHUB_PAT}:@github.com/".insteadOf "https://github.com/" && \
+    pip install git+https://github.com/rlederer-C136/ao_instincts.git
 
 # Copy /root/robot to a backup directory during build
 RUN cp -a /root/robot /root/robot_backup
