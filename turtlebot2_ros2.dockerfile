@@ -122,12 +122,9 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 # Use BuildKit secrets to securely pass the .env file
 RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     export $(grep -v '^#' /run/secrets/.env | xargs) && \
-    # Debug: Check if variables are set (do not echo values)
-    [ -z "$GITHUB_USERNAME" ] && echo "GITHUB_USERNAME is not set" || echo "GITHUB_USERNAME is set" && \
-    [ -z "$c136_github_PAT" ] && echo "c136_github_PAT is not set" || echo "c136_github_PAT is set" && \
-    git clone https://${GITHUB_USERNAME}:${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
+    git config --global credential.helper '!f() { echo "username=${GITHUB_USERNAME}"; echo "password=${c136_github_PAT}"; }; f' && \
+    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
     git config --global --unset credential.helper
-
 
 # Build the ao_instincts package
 RUN source /opt/ros/iron/setup.bash && \
