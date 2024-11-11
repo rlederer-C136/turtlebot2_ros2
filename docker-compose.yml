@@ -7,6 +7,8 @@ services:
       args:
         from_image: osrf/ros:iron-desktop
         parallel_jobs: 4
+      secrets:
+        - env
     image: ingot/turtlebot2-ros-iron:desktop
     environment:
       - DISPLAY=${DISPLAY}
@@ -14,11 +16,11 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /home/$USER/ros2_ws/robot:/root/robot
-
     network_mode: host
-    stdin_open: true  # Equivalent to -i (interactive) in docker run
-    tty: true         # Equivalent to -t (pseudo-TTY) in docker run
-    command: bash      # Starts bash when the container runs
+    stdin_open: true
+    tty: true
+    command: bash
+
 secrets:
-  github_pat:
-    file: ./env
+  env:
+    file: .env

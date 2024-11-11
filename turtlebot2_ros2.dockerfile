@@ -107,12 +107,6 @@ RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
     pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git
 RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
-# Install ao_instincts using the GitHub PAT securely
-RUN --mount=type=secret,id=env \
-    GITHUB_PAT=$(cat /run/secrets/.env) && \
-    git config --global url."https://${GITHUB_PAT}:@github.com/".insteadOf "https://github.com/" && \
-    pip install git+https://github.com/rlederer-C136/ao_instincts.git
-
 # Copy /root/robot to a backup directory during build
 RUN cp -a /root/robot /root/robot_backup
 
@@ -124,6 +118,19 @@ RUN chmod +x /ros_entrypoint.sh
 
 # Set the entrypoint
 ENTRYPOINT ["/ros_entrypoint.sh"]
+
+# Use BuildKit secrets to securely pass the .env file
+RUN --mount=type=secret,id=env,target=/run/secrets/.env \
+    export $(grep -v '^#' /run/secrets/.env | xargs) && \
+    # Clone the ao_instincts repository using the c136_github_PAT
+    git clone https://${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
+    # Clean up any credentials
+    git config --global --unset credential.helper
+
+# Build the ao_instincts package
+RUN source /opt/ros/iron/setup.bash && \
+    colcon build --packages-select ao_instincts
+	
 CMD ["bash"]
 
 # Kobuki udev rules for host machine

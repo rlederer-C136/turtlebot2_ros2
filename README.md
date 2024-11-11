@@ -42,3 +42,31 @@ If you want to interact with the Kobuki base without bringing up the full Turtle
 `ros2 run kobuki_keyop kobuki_keyop_node --ros-args --remap /cmd_vel:=/commands/velocity` or `ros2 run teleop_twist teleop_twist_keyboard --ros-args -r /cmd_vel:=/commands/velocity`.
 
  Note that for MacOS environment, you'll need to add the flag `--platform linux/amd64` for all docker commands to specify non-arm variant
+
+
+Before building with Docker Compose, ensure BuildKit is enabled:
+
+bash:
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
+Then, build and run your Docker Compose services:
+
+bash:
+docker-compose build
+docker-compose up
+
+6. Ensure the PATs Are Not Exposed
+Build Logs: Since we're using BuildKit's secrets feature, the contents of the .env file will not be shown in the build logs.
+Image Layers: The PATs will not be stored in any image layers.
+Final Image: No sensitive information from the .env file will be present in the final image.
+7. Verify Everything Is Working
+After starting the container, verify that the ao_instincts package is available:
+
+bash:
+# Inside the container
+ros2 pkg list | grep ao_instincts
+
+Run your launch file:
+bash:
+ros2 launch ao_instincts your_launch_file.launch.py
