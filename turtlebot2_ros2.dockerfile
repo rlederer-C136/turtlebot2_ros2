@@ -125,7 +125,7 @@ RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     # Debug: Check if variables are set (do not echo values)
     [ -z "$GITHUB_USERNAME" ] && echo "GITHUB_USERNAME is not set" || echo "GITHUB_USERNAME is set" && \
     [ -z "$c136_github_PAT" ] && echo "c136_github_PAT is not set" || echo "c136_github_PAT is set" && \
-    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
+    git clone https://${GITHUB_USERNAME}:${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
     git config --global --unset credential.helper
 
 
