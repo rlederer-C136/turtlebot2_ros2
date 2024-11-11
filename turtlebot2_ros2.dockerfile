@@ -120,8 +120,8 @@ RUN chmod +x /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
 # Use BuildKit secrets to securely pass the .env file
-RUN --mount=type=secret,id=env,target=/run/secrets/.env \
-    export $(grep -v '^#' /run/secrets/.env | xargs) && \
+RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
+    export $(grep -v '^#' .env | xargs) && \
     git clone https://${GITHUB_USERNAME}:${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
     git config --global --unset credential.helper
 
