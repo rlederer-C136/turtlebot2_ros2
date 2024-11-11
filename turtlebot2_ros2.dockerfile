@@ -122,15 +122,13 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 # Use BuildKit secrets to securely pass the .env file
 RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     export $(grep -v '^#' /run/secrets/.env | xargs) && \
-    # Clone the ao_instincts repository using the c136_github_PAT
-    git clone https://${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
-    # Clean up any credentials
+    git clone https://${GITHUB_USERNAME}:${c136_github_PAT}@github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
     git config --global --unset credential.helper
 
 # Build the ao_instincts package
 RUN source /opt/ros/iron/setup.bash && \
     colcon build --packages-select ao_instincts
-	
+
 CMD ["bash"]
 
 # Kobuki udev rules for host machine
