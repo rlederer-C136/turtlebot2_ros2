@@ -123,8 +123,8 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     export $(grep -v '^#' /run/secrets/.env | xargs) && \
     git config --global credential.helper '!f() { echo "username=${GITHUB_USERNAME}"; echo "password=${c136_github_PAT}"; }; f' && \
-    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts
-    # git config --global --unset credential.helper
+    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
+    git config --global --unset credential.helper
 
 # Build the ao_instincts package
 RUN source /opt/ros/iron/setup.bash && \
