@@ -58,7 +58,7 @@ RUN apt-get update && apt-get upgrade -y && rosdep install --from-paths ./instal
 # RUN apt-get update && apt-get install "ros-$ROS_DISTRO-urg-node" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 # And related patch commands
 
-# Install ROS2 Joystick drivers
+# Install ROS2 Joystick drivers and bluetooth support
 RUN apt-get update && apt-get install bluez "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RealSense drivers and ROS nodes

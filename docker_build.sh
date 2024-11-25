@@ -11,6 +11,15 @@ DOCKER_BUILDKIT=1 docker build \
     -t turtlebot2-ros-iron:desktop \
     -f turtlebot2_ros2.dockerfile \
     --build-arg from_image=osrf/ros:iron-desktop \
-    --build-arg parallel_jobs=4 .
+    --build-arg parallel_jobs=4 . &&
+
+echo "Creating temp container"
+docker create --name temp_container turtlebot2-ros-iron:desktop &&
+
+echo "Copying contents of root robot temp container"
+docker cp temp_container:/root/robot ~/ros2ws &&
+
+echo "Removing temp container"
+docker rm temp_container &&
 
 echo "Docker Build Completed"
