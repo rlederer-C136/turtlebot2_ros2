@@ -59,7 +59,7 @@ RUN apt-get update && apt-get upgrade -y && rosdep install --from-paths ./instal
 # And related patch commands
 
 # Install ROS2 Joystick drivers
-RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install bluez "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RealSense drivers and ROS nodes
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-realsense2-* -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
@@ -123,12 +123,26 @@ ENTRYPOINT ["/ros_entrypoint.sh"]
 RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     export $(grep -v '^#' /run/secrets/.env | xargs) && \
     git config --global credential.helper '!f() { echo "username=${GITHUB_USERNAME}"; echo "password=${c136_github_PAT}"; }; f' && \
-    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts && \
-    git config --global --unset credential.helper
+    git clone https://github.com/rlederer-C136/ao_instincts.git src/ao_instincts
+    # git config --global --unset credential.helper
 
 # Build the ao_instincts package
 RUN source /opt/ros/iron/setup.bash && \
-    colcon build --packages-select ao_instincts
+    colcon build --packages-select ao_instincts && source install/setup.bash
+
+# # Create a non-root user
+# RUN useradd -m -s /bin/bash oddbot && \
+# echo "oddbot ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/oddbot
+#
+# # Set up the user's environment
+# COPY ./.bashrc /home/oddbot/.bashrc
+# RUN chown oddbot:oddbot /home/oddbot/.bashrc
+#
+# # Set the working directory
+# WORKDIR /home/oddbot
+#
+# # Switch to the non-root user
+# USER oddbot
 
 CMD ["bash"]
 

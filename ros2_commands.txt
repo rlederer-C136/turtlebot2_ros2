@@ -1,0 +1,34 @@
+docker build -t ingot/turtlebot2-ros-iron:desktop -f turtlebot2_ros2.dockerfile --build-arg from_image=osrf/ros:iron-desktop --build-arg parallel_jobs=4 .
+
+docker create --name temp_container ingot/turtlebot2-ros-iron:desktop
+
+docker cp temp_container:/root/robot ~/ros2ws
+
+docker rm temp_container
+
+For RVIZ2 remote usage:
+xhost +local:docker && docker run -it \
+--env="DISPLAY" \
+--env="QT_X11_NO_MITSHM=1" \
+--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+--volume="/home/$USER/ros2ws/robot:/root/robot" \
+--net=host \
+ingot/turtlebot2-ros-iron:desktop
+
+
+Inside the docker container:
+source /opt/ros/$ROS_DISTRO/setup.bash
+source $ROBOT_WORKSPACE/install/setup.bash
+
+for remote rviz2 startup:
+rviz2
+
+Ensure that ROS_DOMAIN_ID matches robot ID, check for running topics:
+export ROS_DOMAIN_ID=0
+ros2 topic list
+
+additional installation if required:
+apt-get update && apt-get install -y ros-$ROS_DISTRO-rviz-visual-tools
+
+Or for normal robot startup:
+ros2 launch turtlebot2_bringup turtlebot2_bringup.launch.py
