@@ -4,15 +4,15 @@ BASH_HISTORY_FILE=${PWD%/*}/.bash_history
 BASH_RC_FILE=${PWD%/*}/docker/.bashrc
 
 CONTAINER_NAME=turtlebot2-ros-iron:desktop
-DOCKER_USER="oddbot"
+#DOCKER_USER="oddbot"
+#
+#docker_count=$(docker ps -a | grep CONTAINER_NAME | wc -l)
+#((docker_count=docker_count+1))
 
-docker_count=$(docker ps -a | grep CONTAINER_NAME | wc -l)
-((docker_count=docker_count+1))
-
-XAUTH=/tmp/.docker.xauth_$docker_count
-sleep 0.1
-touch $XAUTH
-xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+#XAUTH=/tmp/.docker.xauth_$docker_count
+#sleep 0.1
+#touch $XAUTH
+#xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 
 ## Create a string with all --device options for each device in /dev/
 #device_options=""
@@ -29,7 +29,6 @@ docker run -it \
     -v /dev:/dev \
     --device-cgroup-rule "c 81:* rmw" \
     --device-cgroup-rule "c 189:* rmw" \
-    --volume="$BASH_HISTORY_FILE:/home/$DOCKER_USER/.bash_history" \
     --volume="/home/$USER/ros2ws/robot:/root/robot" \
     --network=host \
     --privileged \
