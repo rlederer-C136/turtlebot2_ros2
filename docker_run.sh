@@ -14,13 +14,13 @@ sleep 0.1
 touch $XAUTH
 xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 
-# Create a string with all --device options for each device in /dev/
-device_options=""
-for device in /dev/*; do
-    if [ -e "$device" ]; then
-        device_options+="--device=$device "
-    fi
-done
+## Create a string with all --device options for each device in /dev/
+#device_options=""
+#for device in /dev/*; do
+#    if [ -e "$device" ]; then
+#        device_options+="--device=$device "
+#    fi
+#done
 
 docker run -it \
     --device=/dev/ttyACM0 \
@@ -30,12 +30,10 @@ docker run -it \
     --device-cgroup-rule "c 81:* rmw" \
     --device-cgroup-rule "c 189:* rmw" \
     --user $(id -u):$(id -g) \
-    --volume="${PWD%/*}:/home/$DOCKER_USER" \
     --volume="$BASH_HISTORY_FILE:/home/$DOCKER_USER/.bash_history" \
     --volume="/home/$USER/ros2ws/robot:/root/robot" \
     --network=host \
     --privileged \
-    $device_options \
     turtlebot2-ros-iron:desktop
 
 #docker run -it --rm \
