@@ -17,7 +17,7 @@ echo "Creating temp container"
 docker create --name temp_container turtlebot2-ros-iron:desktop &&
 
 echo "Copying contents of root robot temp container"
-docker cp temp_container:/root/robot ~/ros2ws &&
+docker cp temp_container:/root/robot /home/$USER/ros2ws &&
 
 echo "Removing temp container"
 docker rm temp_container &&

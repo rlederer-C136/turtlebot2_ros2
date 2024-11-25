@@ -29,7 +29,6 @@ docker run -it \
     -v /dev:/dev \
     --device-cgroup-rule "c 81:* rmw" \
     --device-cgroup-rule "c 189:* rmw" \
-    --user $(id -u):$(id -g) \
     --volume="$BASH_HISTORY_FILE:/home/$DOCKER_USER/.bash_history" \
     --volume="/home/$USER/ros2ws/robot:/root/robot" \
     --network=host \
