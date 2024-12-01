@@ -1,0 +1,32 @@
+# Custom PS3 controller configuration for teleop_twist_joy
+
+joy_node:
+  ros__parameters:
+    # Adjust the device path if necessary
+    dev: /dev/input/js0
+
+teleop_twist_joy:
+  ros__parameters:
+    require_enable_button: true
+    enable_button: 11  # Set this to the button number for R1
+    enable_turbo_button: -1  # Disable turbo button
+
+    axis_linear:
+      x: 1  # Left stick vertical axis
+      y: 0  # Left stick horizontal axis
+      z: 3  # Right stick vertical axis
+    scale_linear:
+      x: 0.5
+      y: 0.5
+      z: 0.5
+    scale_linear_turbo:
+      x: 1.0
+      y: 1.0
+      z: 1.0
+
+    axis_angular:
+      yaw: 2  # Right stick horizontal axis
+    scale_angular:
+      yaw: 1.0
+    scale_angular_turbo:
+      yaw: 2.0
