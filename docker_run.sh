@@ -27,6 +27,7 @@ docker run -it \
     --device=/dev/kobuki \
     --device=/dev/ttyUSB0 \
     -v /dev:/dev \
+    -v /dev/input/js0:/dev/input/js0 \
     --device-cgroup-rule "c 81:* rmw" \
     --device-cgroup-rule "c 189:* rmw" \
     --volume="/home/$USER/ros2ws/robot:/root/robot" \

@@ -59,7 +59,8 @@ RUN apt-get update && apt-get upgrade -y && rosdep install --from-paths ./instal
 # And related patch commands
 
 # Install ROS2 Joystick drivers and bluetooth support
-RUN apt-get update && apt-get install bluez "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RealSense drivers and ROS nodes
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-realsense2-* -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
@@ -167,3 +168,7 @@ CMD ["bash"]
 # `ros2 run kobuki_keyop kobuki_keyop_node`
 # or
 # `ros2 run teleop_twist_keyboard teleop_twist_keyboard`
+#
+# Playstation 3 USB/Bluetooth controller Teleop
+# `ros2 launch teleop_twist_joy teleop-launch.py joy_config:='ps3'`
+
