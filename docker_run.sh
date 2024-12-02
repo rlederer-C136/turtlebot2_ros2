@@ -30,7 +30,7 @@ docker run -it \
     -v /dev/input/js0:/dev/input/js0 \
     --device-cgroup-rule "c 81:* rmw" \
     --device-cgroup-rule "c 189:* rmw" \
-    --volume="/home/$USER/ros2ws/robot:/root/robot" \
+#    --volume="/home/$USER/ros2ws/robot:/root/robot" \
     --network=host \
     --privileged \
     turtlebot2-ros-iron:desktop

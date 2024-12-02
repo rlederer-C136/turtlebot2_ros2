@@ -109,10 +109,10 @@ RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
 RUN pip install git+https://github.com/aolabsai/ao_arch.git
 
 # Copy /root/robot to a backup directory during build
-RUN cp -a /root/robot /root/robot_backup
+# RUN cp -a /root/robot /root/robot_backup
 
-COPY turtlebot2.rviz /root/robot
-COPY ps3_teleop.yaml /root/robot
+COPY turtlebot2.rviz /root/robot/
+COPY ps3_teleop.yaml /root/robot/
 
 COPY ros_entrypoint.sh /
 # Make sure the entrypoint script is executable
