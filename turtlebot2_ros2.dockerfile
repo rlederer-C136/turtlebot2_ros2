@@ -1,6 +1,6 @@
 # Copyright 2023-2024 Ingot Robotics
 
-ARG from_image=ros:iron
+ARG from_image=ros:jazzy
 ARG robot_workspace="/root/robot"
 
 FROM $from_image AS kobuki_builder

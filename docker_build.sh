@@ -3,7 +3,7 @@
 # Set Container Name
 CONTAINER_NAME="turtlebot2-ros-jazzy:desktop"
 
-echo "Building ROS2-Iron Container"
+echo "Building ROS2-Jazzy Container"
 # docker build --rm -t $CONTAINER_NAME:latest .
 
 DOCKER_BUILDKIT=1 docker build \
