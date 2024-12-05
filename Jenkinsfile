@@ -1,9 +1,10 @@
+
 // (c) 2024 Ingot Robotics
 //
 // Jenkinsfile to lint, build, and test turtlebot2_ros2 repo
 
 // Supported ROS 2 versions are given in the `rosVersions` list
-def rosVersions = ['iron', 'humble'] //'jazzy'
+def rosVersions = ['jazzy', 'iron', 'humble']
 
 // For each ROS 2 version, build from the official docker image and the OSRF
 // desktop image
@@ -11,7 +12,7 @@ def baseImages = []
 rosVersions.each {
     baseImages.add( 'ros:' + it )
     baseImages.add( 'osrf/ros:' + it + '-desktop')
-} 
+}
 
 // If Ingot Robotics shared library is not available on the Jenkins instance,
 // skip local registry steps
@@ -19,7 +20,7 @@ localRegistryExists = false
 try {
     library('ingot-robotics')
     localRegistryExists = true
-    }
+}
 catch (e) {
     localRegistryExists = false
     print e

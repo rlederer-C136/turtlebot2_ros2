@@ -14,20 +14,22 @@ ENV ROBOT_WORKSPACE=$robot_workspace
 ENV KOBUKI_BUILD_SPACE=$ROBOT_WORKSPACE/kobuki_build_space
 WORKDIR $KOBUKI_BUILD_SPACE
 
-RUN wget -q https://raw.githubusercontent.com/kobuki-base/kobuki_documentation/release/1.0.x/resources/colcon.meta && \
-    wget -q https://raw.githubusercontent.com/kobuki-base/kobuki_documentation/release/1.0.x/resources/kobuki_standalone.repos
+# RUN wget -q https://raw.githubusercontent.com/kobuki-base/kobuki_documentation/release/1.0.x/resources/colcon.meta && \
+#     wget -q https://raw.githubusercontent.com/kobuki-base/kobuki_documentation/release/1.0.x/resources/kobuki_standalone.repos
+#
+# # Update kobuki_standalone.repos to build on iron
+# # Comment out foxy ament tools
+# RUN sed -i 's/ament_/#&/g' $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
+# # Add lines for kobuki_ros
+# RUN echo "  cmv_vel_mux      : { type: 'git', url: 'https://github.com/kobuki-base/cmd_vel_mux.git', version: 'devel' }" >> $KOBUKI_BUILD_SPACE/kobuki_standalone.repos && \
+#     echo "  kobuki_ros       : { type: 'git', url: 'https://github.com/kobuki-base/kobuki_ros.git',  version: 'devel' }" >> $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
+# # Update ecl_lite version to 1.2.x
+# RUN sed -i '/ecl_lite/s/release\/1.1.x/release\/1.2.x/g' $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
 
-# Update kobuki_standalone.repos to build on iron
-# Comment out foxy ament tools
-RUN sed -i 's/ament_/#&/g' $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
-# Add lines for kobuki_ros
-RUN echo "  cmv_vel_mux      : { type: 'git', url: 'https://github.com/kobuki-base/cmd_vel_mux.git', version: 'devel' }" >> $KOBUKI_BUILD_SPACE/kobuki_standalone.repos && \
-    echo "  kobuki_ros       : { type: 'git', url: 'https://github.com/kobuki-base/kobuki_ros.git',  version: 'devel' }" >> $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
-# Update ecl_lite version to 1.2.x
-RUN sed -i '/ecl_lite/s/release\/1.1.x/release\/1.2.x/g' $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
+COPY kobuki_standalone.repos .
 
 RUN mkdir -p $ROBOT_WORKSPACE/src && vcs import $ROBOT_WORKSPACE/src < $KOBUKI_BUILD_SPACE/kobuki_standalone.repos
-RUN touch $ROBOT_WORKSPACE/src/eigen/AMENT_IGNORE
+# RUN touch $ROBOT_WORKSPACE/src/eigen/AMENT_IGNORE
 
 # Install dependencies
 WORKDIR $ROBOT_WORKSPACE
@@ -53,13 +55,19 @@ COPY --from=kobuki_builder $ROBOT_WORKSPACE/install/ install
 WORKDIR $ROBOT_WORKSPACE
 RUN apt-get update && apt-get upgrade -y && rosdep install --from-paths ./install/*/ -y --ignore-src && rm -rf /var/lib/apt/lists/*
 
+# # Clone Kobuki ROS2 source code and build packages
+# WORKDIR $ROBOT_WORKSPACE/src
+# RUN git clone https://github.com/kobuki-base/kobuki_ros.git
+# # WORKDIR $ROBOT_WORKSPACE
+# # RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
+
+
 # Remove Hokuyo URG node installation (already commented out in your original Dockerfile)
 # Removed the following commented lines:
 # RUN apt-get update && apt-get install "ros-$ROS_DISTRO-urg-node" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 # And related patch commands
 
 # Install ROS2 Joystick drivers and bluetooth support
-
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RealSense drivers and ROS nodes
@@ -112,7 +120,7 @@ RUN pip install git+https://github.com/aolabsai/ao_arch.git
 # RUN cp -a /root/robot /root/robot_backup
 
 COPY turtlebot2.rviz /root/robot/
-COPY ps3_teleop.yaml /root/robot/
+COPY ps3.config.yaml /root/robot/
 
 COPY ros_entrypoint.sh /
 # Make sure the entrypoint script is executable
