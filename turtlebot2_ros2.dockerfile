@@ -74,7 +74,7 @@ RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-reco
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-realsense2-* -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install Nav2 bringup package
-RUN apt-get update && apt-get install "ros-$ROS_DISTRO-nav2-bringup" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install "ros-$ROS_DISTRO-nav2-bringup" "ros-$ROS_DISTRO-navigation2" "ros-$ROS_DISTRO-nav2-minimal-tb*"-y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RTABMAP package
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO-rtabmap-ros" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
@@ -104,7 +104,7 @@ RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && colcon build
 # Install YOLO and dependencies
 RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt $ROBOT_WORKSPACE
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --break-system-packages
 RUN git clone https://github.com/ultralytics/yolov5.git
 
 # Install AO modules, ao_core and ao_arch
@@ -113,8 +113,8 @@ RUN git clone https://github.com/ultralytics/yolov5.git
 COPY .env $ROBOT_WORKSPACE
 RUN --mount=type=secret,id=env,target="$ROBOT_WORKSPACE/.env" \
     export $(grep -v '^#' .env | xargs) && \
-    pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git
-RUN pip install git+https://github.com/aolabsai/ao_arch.git
+    pip install git+https://${ao_github_PAT}@github.com/aolabsai/ao_core.git --break-system-packages
+RUN pip install git+https://github.com/aolabsai/ao_arch.git --break-system-packages
 
 # Copy /root/robot to a backup directory during build
 # RUN cp -a /root/robot /root/robot_backup
@@ -137,7 +137,7 @@ RUN --mount=type=secret,id=env,target=/run/secrets/.env \
     git config --global --unset credential.helper
 
 # Build the ao_instincts package
-RUN source /opt/ros/iron/setup.bash && \
+RUN source "/opt/ros/$ROS_DISTRO/setup.bash" && \
     colcon build --packages-select ao_instincts && source install/setup.bash
 
 # # Create a non-root user
@@ -180,4 +180,5 @@ CMD ["bash"]
 #
 # Playstation 3 USB/Bluetooth controller Teleop
 # `ros2 launch teleop_twist_joy teleop-launch.py joy_config:='ps3'`
+# `ros2 launch teleop_twist_joy teleop-launch.py config_filepath:=$HOME/robot/ps3.config.yaml`
 

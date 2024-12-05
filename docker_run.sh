@@ -32,7 +32,7 @@ docker run -it \
     --device-cgroup-rule "c 189:* rmw" \
     --network=host \
     --privileged \
-    turtlebot2-ros-iron:desktop
+    turtlebot2-ros-jazzy:desktop
 
 #docker run -it --rm \
 #    --name CONTAINER_NAME-$docker_count \
