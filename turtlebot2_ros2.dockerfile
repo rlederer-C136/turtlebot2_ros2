@@ -74,7 +74,7 @@ RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-joy -y --no-install-reco
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO"-realsense2-* -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install Nav2 bringup package
-RUN apt-get update && apt-get install "ros-$ROS_DISTRO-nav2-bringup" "ros-$ROS_DISTRO-navigation2" "ros-$ROS_DISTRO-nav2-minimal-tb*"-y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install "ros-$ROS_DISTRO-nav2-bringup" "ros-$ROS_DISTRO-navigation2" "ros-$ROS_DISTRO-nav2-minimal-tb*" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 # Install RTABMAP package
 RUN apt-get update && apt-get install "ros-$ROS_DISTRO-rtabmap-ros" -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
